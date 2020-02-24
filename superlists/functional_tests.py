@@ -18,6 +18,13 @@ class NewVisitorTest(unittest.TestCase):
         self.assertIn("Listy", self.browser.title)
         self.fail("Zakonczenie testu!")
 
+        #Wpisywanie rzeczy do zrobienia
+
+        #Zapisywanie rzeczy
+
+        # Sprawdzenie po ponownym otwarcu czy rzzeczy zostaly
+
+
 
 
 if __name__ == "__main__":
