@@ -5,4 +5,4 @@ from django.http import HttpResponse
 
 
 def home_page(request):
-    return HttpResponse('<html><title>Listy rzeczy do zrobienia</title></html>')
+    return render(request, "home.html") #Django automatycznie szuka katalogow templates szuka pliku html i tworzony jest http request
