@@ -41,10 +41,11 @@ class NewVisitorTest(unittest.TestCase):
 
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue (
-            any(row.text == '1: Kupić pawie pióra' for row in rows),
-            "Nowy element nie znajduje się w tabeli"
-        )
+        # self.assertTrue (
+        #     any(row.text == '1: Kupić pawie pióra' for row in rows),
+        #     "Nowy element nie znajduje się w tabeli -- jego tekst to: {}".format(table.text)
+        # )
+        self.assertIn('1: Kupić pawie pióra', [row.text for row in rows])
         # Na stronie nadal znajduje się pole tekstowe zachęcające do podania kolejnego zadania.
         # Edyta wpisała "Użyć pawich piór do zrobienia przynęty" (Edyta jest niezwykle skrupulatna).
         self.fail('Zakończenie testu!')

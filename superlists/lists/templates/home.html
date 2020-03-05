@@ -6,13 +6,12 @@
         <h1>Twoja Listy rzeczy do zrobienia</h1>
 
         <form method="post">
-            <input name="item_text" id="id_new_item" type="text" placeholder="Wpisz rzecz do zrobienia"/>
+            <input name="item_text" id="id_new_item" placeholder="Wpisz rzecz do zrobienia"/>
             {% csrf_token %}
         </form>
 
-
         <table id="id_list_table">
-            <tr><td>{{ new_item_text }}</td></tr>
+            <tr><td>1: {{ new_item_text }}</td></tr>
         </table>
     </body>
 </html>
