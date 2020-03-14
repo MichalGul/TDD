@@ -5,7 +5,7 @@ from selenium.webdriver.common.keys import Keys
 class NewVisitorTest(unittest.TestCase):
     
     def setUp(self):
-        self.browser = webdriver.Chrome(r"E:\Downloads\chromedriver.exe")
+        self.browser = webdriver.Chrome(r"F:\Download\chromedriver.exe")
         self.browser.implicitly_wait(3)
 
     def tearDown(self):
@@ -39,6 +39,7 @@ class NewVisitorTest(unittest.TestCase):
         # "1: Kupić pawie pióra" jako element listy rzeczy do zrobienia.
         inputbox.send_keys(Keys.ENTER)
 
+        
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
         # self.assertTrue (
@@ -46,11 +47,30 @@ class NewVisitorTest(unittest.TestCase):
         #     "Nowy element nie znajduje się w tabeli -- jego tekst to: {}".format(table.text)
         # )
         self.assertIn('1: Kupić pawie pióra', [row.text for row in rows])
+
         # Na stronie nadal znajduje się pole tekstowe zachęcające do podania kolejnego zadania.
         # Edyta wpisała "Użyć pawich piór do zrobienia przynęty" (Edyta jest niezwykle skrupulatna).
-        self.fail('Zakończenie testu!')
-        
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Użyć pawich piór do zrobienia przynęty')
+        inputbox.send_keys(Keys.ENTER)
+
         # Strona została ponownie uaktualniona i teraz wyświetla dwa elementy na liście rzeczy do zrobienia.
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('1: Kupić pawie pióra', [row.text for row in rows])
+        self.assertIn(
+            '2: Użyć pawich piór do zrobienia przynęty', [row.text for row in rows]
+            )
+
+
+        # Edyta była ciekawa, czy witryna zapamięta jej listę. Zwróciła uwagę na
+        # wygenerowany dla niej unikatowy adres URL, obok którego znajduje się
+        # pewien tekst z wyjaśnieniem.
+        self.fail('Zakończenie testu!')
+
+        # Przechodzi pod podany adres URL i widzi wyświetloną swoją listę rzeczy do zrobienia.
+        
+
 
 if __name__ == "__main__":
     unittest.main(warnings="ignore")
