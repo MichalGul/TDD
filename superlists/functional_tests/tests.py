@@ -3,11 +3,19 @@ import unittest
 from selenium.webdriver.common.keys import Keys
 from django.test import LiveServerTestCase
 
+def prepare_webdriver():
+    options = webdriver.ChromeOptions()
+    options.binary_location = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+    chrome_drive_binary = r"F:\Download\chromedriver.exe"
+    return webdriver.Chrome(chrome_drive_binary, chrome_options=options)
 
 class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self):
-        self.browser = webdriver.Chrome(r"F:\Download\chromedriver.exe")
+        options = webdriver.ChromeOptions()
+        options.binary_location = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+        chrome_drive_binary = r"F:\Download\chromedriver.exe"
+        self.browser = prepare_webdriver()
         self.browser.implicitly_wait(3)
 
     def tearDown(self):
@@ -64,13 +72,11 @@ class NewVisitorTest(LiveServerTestCase):
 
         # # Edyta była ciekawa, czy witryna zapamięta jej listę. Zwróciła uwagę na
         # # wygenerowany dla niej unikatowy adres URL, obok którego znajduje się
-
         # # pewien tekst z wyjaśnieniem.
-
         ## Używamy nowej sesji przeglądarki internetowej, aby mieć pewność, że żadne
         ## informacje dotyczące Edyty nie zostaną ujawnione, na przykład przez cookies. #
         self.browser.quit()
-        self.browser = webdriver.Chrome()
+        self.browser = prepare_webdriver()
 
 
         #Franek odwiedza stronę główną.
@@ -87,7 +93,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         #Franek otrzymuje unikatowy adres URL prowadzący do listy
         francis_list_url = self.browser.current_url
-        self.assertRegex(francis_list_url, '/list/.+')
+        self.assertRegex(francis_list_url, '/lists/.+')
         self.assertNotEqual(francis_list_url, edith_list_url)
 
         #Nie ma sladu po liscie Edyty

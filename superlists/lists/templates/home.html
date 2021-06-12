@@ -3,17 +3,12 @@
         <title>Listy rzeczy do zrobienia</title>
     </head>
     <body>
-        <h1>Twoja Listy rzeczy do zrobienia</h1>
+        <h1>Utwórz Listy rzeczy do zrobienia</h1>
 
         <form method="post">
             <input name="item_text" id="id_new_item" placeholder="Wpisz rzecz do zrobienia"/>
             {% csrf_token %}
         </form>
 
-        <table id="id_list_table">
-            {% for item in items %}
-                <tr><td>{{forloop.counter}}: {{item.text}}</td></tr>
-            {% endfor %}
-        </table>
     </body>
 </html>
