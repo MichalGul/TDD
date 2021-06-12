@@ -3,7 +3,7 @@ from django.urls import resolve
 from lists.views import home_page
 from django.http import HttpRequest
 from django.template.loader import render_to_string
-from lists.models import Item
+from lists.models import Item, List
 
 # Create your tests here.
 
@@ -23,16 +23,26 @@ class HomePageTest(TestCase):
         # self.assertIn(b'<title>Listy rzeczy do zrobienia</title>', response.content) # 
         # self.assertTrue(response.content.strip().endswith(b'</html>')) # 
 
-class ItemModelTest(TestCase):
+
+class ListAndItemModelTest(TestCase):
 
     def test_saving_and_retrieving_items(self):
+
+        list_ = List()
+        list_.save()
+
         first_item = Item()
         first_item.text = "Absolutnie pierwszy element listy"
+        first_item.list=list_
         first_item.save()
 
         secon_item = Item()
         secon_item.text = "Drugi element"
+        secon_item.list=list_
         secon_item.save()
+
+        saved_list = List.objects.first()
+        self.assertEqual(saved_list, list_)
 
         saved_items = Item.objects.all()
         self.assertEqual(saved_items.count(), 2)
@@ -40,7 +50,10 @@ class ItemModelTest(TestCase):
         first_saved_item = saved_items[0]
         second_saved_item = saved_items[1]
         self.assertEqual(first_saved_item.text, 'Absolutnie pierwszy element listy')
+        self.assertEqual(first_saved_item.list, list_)
         self.assertEqual(second_saved_item.text, 'Drugi element')
+        self.assertEqual(second_saved_item.list, list_)
+
 
 class ListViewTest(TestCase):
 
@@ -79,8 +92,10 @@ class NewListTest(TestCase):
         self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')
         self.assertRedirects(response, '/lists/the-only-list-in-the-world/')
 
-# class SmokeTest(TestCase):
 
-#     def test_bad_maths(self):
-#         self.assertEqual(1 + 1, 3)
+class ListViewTest(TestCase):
 
+    def test_displays_all_items(self):
+        list_ = List.objects.create()
+        Item.objects.create(text='itemey 1', list=list_)
+        Item.objects.create(text='itemey 2', list=list_)
