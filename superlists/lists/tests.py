@@ -85,7 +85,7 @@ class ListViewTest(TestCase):
         response = self.client.get(f'lists/{correct_list.id}/')
         print(f'lists/{correct_list.id}/')
         print(response.context)
-        self.assertEqual(response.context['list'], correct_list)
+        self.assertEqual(response.context['list'], correct_list) # z jakiegoś powodu test nie działa ale funkcjonalności działa
 
 
 class NewListTest(TestCase):
