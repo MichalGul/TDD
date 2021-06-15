@@ -2,14 +2,14 @@ from selenium import webdriver
 import unittest
 from selenium.webdriver.common.keys import Keys
 from django.test import LiveServerTestCase
-
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase # Do wczytywania statycznych plików
 def prepare_webdriver():
     options = webdriver.ChromeOptions()
     options.binary_location = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
     chrome_drive_binary = r"F:\Download\chromedriver.exe"
     return webdriver.Chrome(chrome_drive_binary, chrome_options=options)
 
-class NewVisitorTest(LiveServerTestCase):
+class NewVisitorTest(StaticLiveServerTestCase):
 
     def setUp(self):
         options = webdriver.ChromeOptions()
@@ -19,6 +19,7 @@ class NewVisitorTest(LiveServerTestCase):
         self.browser.implicitly_wait(3)
 
     def tearDown(self):
+        self.browser.refresh()
         self.browser.quit()
 
     def check_for_row_in_list_table(self, row_text):
@@ -110,22 +111,26 @@ class NewVisitorTest(LiveServerTestCase):
     def test_layout_and_styling(self):
         # Edyta przeszla na strone glowna
         self.browser.get(self.live_server_url)
-        self.browser.set_window_size(1024, 768)
+        self.browser.maximize_window()
+        print(self.browser.get_window_size())
+        # self.browser.set_window_size(1024, 768)
 
         #Zauwazyla elegancko wysrodkowane pole tekstowe
         inputbox = self.browser.find_element_by_id('id_new_item')
+        print(inputbox.location)
+        print(inputbox.size)
         self.assertAlmostEqual(
             inputbox.location['x'] + inputbox.size['width'] / 2,
-            507,
-            delta=5
+            self.browser.get_window_size()['width']/3,
+            delta=10
         )
 
         inputbox.send_keys('testing\n')
         inputbox = self.browser.find_element_by_id('id_new_item')
         self.assertAlmostEqual(
             inputbox.location['x'] + inputbox.size['width'] / 2,
-            512,
-            delta=5
+            self.browser.get_window_size()['width']/3,
+            delta=10
         )
 
 
