@@ -3,19 +3,35 @@ import unittest
 from selenium.webdriver.common.keys import Keys
 from django.test import LiveServerTestCase
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase # Do wczytywania statycznych plików
+import sys, os
+
 def prepare_webdriver():
     options = webdriver.ChromeOptions()
-    options.binary_location = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
-    chrome_drive_binary = r"F:\Download\chromedriver.exe"
+    options.binary_location = r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+    chrome_drive_binary = r"E:\Downloads\chromedriver.exe"
     return webdriver.Chrome(chrome_drive_binary, chrome_options=options)
 
 class NewVisitorTest(StaticLiveServerTestCase):
 
+    # @classmethod
+    # def setUpClass(cls):
+    #     for arg in sys.argv:
+    #         if 'liveserver' in arg:
+    #             cls.server_url = 'http://' + arg.split('=')[1]
+    #             return
+    #     super().setUpClass()
+    #     cls.server_url = cls.live_server_url
+    #
+    # @classmethod
+    # def tearDownClass(cls):
+    #     if cls.server_url == cls.live_server_url:
+    #         super().tearDownClass()
+
     def setUp(self):
-        options = webdriver.ChromeOptions()
-        options.binary_location = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
-        chrome_drive_binary = r"F:\Download\chromedriver.exe"
         self.browser = prepare_webdriver()
+        staging_server = os.environ.get('STAGING_SERVER')
+        if staging_server:
+            self.live_server_url = 'http://' + staging_server
         self.browser.implicitly_wait(3)
 
     def tearDown(self):
