@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import resolve
+from django.utils.html import escape
 from lists.views import home_page
 from django.http import HttpRequest
 from django.template.loader import render_to_string
@@ -56,14 +57,12 @@ class ListViewTest(TestCase):
         self.assertEqual(response.context['list'], correct_list) # z jakiegoś powodu test nie działa ale funkcjonalności działa
 
 
-class NewListTest(TestCase):
-
     def test_can_save_a_POST_request_to_an_existing_list(self):
         other_list = List.objects.create()
         correct_list = List.objects.create()
 
         self.client.post(
-            f'/lists/{correct_list.id}/add_item',
+            f'/lists/{correct_list.id}/',
             data={'item_text': 'Nowy element dla istniejącej listy'}
         )
         self.assertEqual(Item.objects.count(), 1)
@@ -72,14 +71,19 @@ class NewListTest(TestCase):
         self.assertEqual(new_item.text, 'Nowy element dla istniejącej listy')
         self.assertEqual(new_item.list, correct_list)
 
-    def test_redirects_to_list_view(self):
+
+    def test_POST_redirects_to_list_view(self):
         other_list = List.objects.create()
         correct_list = List.objects.create()
         response = self.client.post(
-            f'/lists/{correct_list.id}/add_item',
+            f'/lists/{correct_list.id}/',
             data={'item_text': 'Nowy element dla istniejącej listy'}
         )
         self.assertRedirects(response, f'/lists/{correct_list.id}/')
+
+
+class NewListTest(TestCase):
+
 
     def test_saving_a_POST_request(self):
 
@@ -101,6 +105,17 @@ class NewListTest(TestCase):
         self.assertRedirects(response, f'/lists/{new_list.id}/')
 
 
+    def test_validation_errors_are_sent_back_to_home_page_template(self):
+        response = self.client.post('/lists/new', data={'item_text': ''})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'home.html')
+        expected_error = escape("Element nie może być pusty")
+        self.assertContains(response, expected_error)
+
+    def test_invalid_list_items_arent_saved(self):
+        self.client.post('/lists/new', data={'item_text': ''})
+        self.assertEqual(List.objects.count(), 0)
+        self.assertEqual(Item.objects.count(), 0)
 
 
 # class ListViewTest(TestCase):

@@ -19,7 +19,7 @@ class ItemValidationTest(FunctionalTest):
         # Po odświeżeniu strony głównej zobaczyła komunikat błędu
         # informujący o niemożliwości utworzenia pustego elementu na liście.
         error = self.browser.find_element_by_css_selector('.has-error')
-        self.assertEqual(error.text, "element nie może być pusty")
+        self.assertEqual(error.text, "Element nie może być pusty")
 
         # Spróbowała ponownie, wpisując dowolny tekst, i wszystko zadziałało.
         self.browser.find_element_by_id('id_new_item').send_keys('Kupić mleko\n')
