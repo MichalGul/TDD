@@ -40,3 +40,8 @@ class ListAndItemModelTest(TestCase):
             item.save()
             item.full_clean()
 
+    def test_get_absolute_url(self):
+        list_ = List.objects.create()
+        print(list_.get_absolute_url()) # returns /lists/1/
+        self.assertEqual(list_.get_absolute_url(), f'/lists/{list_.id}/')
+
