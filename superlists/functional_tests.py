@@ -5,7 +5,7 @@ from selenium.webdriver.common.keys import Keys
 class NewVisitorTest(unittest.TestCase):
     
     def setUp(self):
-        self.browser = webdriver.Chrome(r"F:\Download\chromedriver.exe")
+        self.browser = webdriver.Chrome(r"D:\Download_D\chromedriver.exe")
         self.browser.implicitly_wait(3)
 
     def tearDown(self):

@@ -1,48 +1,16 @@
 from selenium import webdriver
-import unittest
+from .base import FunctionalTest
 from selenium.webdriver.common.keys import Keys
-from django.test import LiveServerTestCase
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase # Do wczytywania statycznych plików
-import sys, os
+
 
 def prepare_webdriver():
     options = webdriver.ChromeOptions()
     options.binary_location = r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-    chrome_drive_binary = r"E:\Downloads\chromedriver.exe"
+    chrome_drive_binary = r"D:\Download_D\chromedriver.exe"
     return webdriver.Chrome(chrome_drive_binary, chrome_options=options)
 
-class NewVisitorTest(StaticLiveServerTestCase):
 
-    # @classmethod
-    # def setUpClass(cls):
-    #     for arg in sys.argv:
-    #         if 'liveserver' in arg:
-    #             cls.server_url = 'http://' + arg.split('=')[1]
-    #             return
-    #     super().setUpClass()
-    #     cls.server_url = cls.live_server_url
-    #
-    # @classmethod
-    # def tearDownClass(cls):
-    #     if cls.server_url == cls.live_server_url:
-    #         super().tearDownClass()
-
-    def setUp(self):
-        self.browser = prepare_webdriver()
-        staging_server = os.environ.get('STAGING_SERVER')
-        if staging_server:
-            self.live_server_url = 'http://' + staging_server
-        self.browser.implicitly_wait(3)
-
-    def tearDown(self):
-        self.browser.refresh()
-        self.browser.quit()
-
-    def check_for_row_in_list_table(self, row_text):
-        table = self.browser.find_element_by_id("id_list_table")
-        rows = table.find_elements_by_tag_name('tr')
-
-        self.assertIn(row_text, [row.text for row in rows])
+class NewVisitorTest(FunctionalTest):
 
     def test_can_start_a_list_and_retrive_it_later(self):
         # Opis scenariusza testu funkcjonalnego
@@ -118,35 +86,6 @@ class NewVisitorTest(StaticLiveServerTestCase):
         self.assertNotIn("kupić pawie próra", page_text)
         self.assertIn("Kupić mleko", page_text)
 
-        self.fail('Zakończenie testu!')
+        # self.fail('Zakończenie testu!')
 
         # Przechodzi pod podany adres URL i widzi wyświetloną swoją listę rzeczy do zrobienia.
-
-
-
-    def test_layout_and_styling(self):
-        # Edyta przeszla na strone glowna
-        self.browser.get(self.live_server_url)
-        self.browser.maximize_window()
-        print(self.browser.get_window_size())
-        # self.browser.set_window_size(1024, 768)
-
-        #Zauwazyla elegancko wysrodkowane pole tekstowe
-        inputbox = self.browser.find_element_by_id('id_new_item')
-        print(inputbox.location)
-        print(inputbox.size)
-        self.assertAlmostEqual(
-            inputbox.location['x'] + inputbox.size['width'] / 2,
-            self.browser.get_window_size()['width']/3,
-            delta=10
-        )
-
-        inputbox.send_keys('testing\n')
-        inputbox = self.browser.find_element_by_id('id_new_item')
-        self.assertAlmostEqual(
-            inputbox.location['x'] + inputbox.size['width'] / 2,
-            self.browser.get_window_size()['width']/3,
-            delta=10
-        )
-
-
