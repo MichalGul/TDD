@@ -10,7 +10,7 @@ from lists.models import Item, List
 class HomePageTest(TestCase):
 
     def test_root_url_resolves_to_home_page_view(self):
-        found = resolve('/') 
+        found = resolve('/')
         self.assertEqual(found.func, home_page)
 
     def test_home_page_returns_correct_html(self):
@@ -22,38 +22,6 @@ class HomePageTest(TestCase):
         # self.assertTrue(response.content.strip().startswith(b'<html>')) # 
         # self.assertIn(b'<title>Listy rzeczy do zrobienia</title>', response.content) # 
         # self.assertTrue(response.content.strip().endswith(b'</html>')) # 
-
-
-class ListAndItemModelTest(TestCase):
-
-    def test_saving_and_retrieving_items(self):
-
-        list_ = List()
-        list_.save()
-
-        first_item = Item()
-        first_item.text = "Absolutnie pierwszy element listy"
-        first_item.list=list_
-        first_item.save()
-
-        secon_item = Item()
-        secon_item.text = "Drugi element"
-        secon_item.list=list_
-        secon_item.save()
-
-        saved_list = List.objects.first()
-        self.assertEqual(saved_list, list_)
-
-        saved_items = Item.objects.all()
-        self.assertEqual(saved_items.count(), 2)
-
-        first_saved_item = saved_items[0]
-        second_saved_item = saved_items[1]
-        self.assertEqual(first_saved_item.text, 'Absolutnie pierwszy element listy')
-        self.assertEqual(first_saved_item.list, list_)
-        self.assertEqual(second_saved_item.text, 'Drugi element')
-        self.assertEqual(second_saved_item.list, list_)
-
 
 class ListViewTest(TestCase):
 
