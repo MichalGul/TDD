@@ -23,30 +23,34 @@ def home_page(request):
 
 def view_list(request, list_id):
     list_ = List.objects.get(id=list_id)
-    error=None
+    form = ItemForm(data=request.POST)
     if request.method == "POST":
-        try:
-            item = Item(text=request.POST['text'], list=list_)
-            item.full_clean()
-            item.save()
+        if form.is_valid():
+            Item.objects.create(text=request.POST['text'], list=list_)
             return redirect(list_)
-        except ValidationError:
-            error = "Element nie może być pusty"
     return render(request, 'list.html', {'list': list_,
-                                         'error': error})
+                                         'form': form})
+
+
+# def new_list(request):
+#     print(dir(request))
+#     list_ = List.objects.create()
+#     item = Item(text=request.POST['text'], list=list_)
+#     try:
+#         item.full_clean() # sprawdzenie poprawności stworzonego obiektu
+#         item.save()
+#     except ValidationError:
+#         list_.delete()
+#         error = "Element listy nie może być pusty"
+#         return render(request, "home.html", {"error": error})
+#     return redirect(list_) # automatycznie wola get_absolute_url
 
 
 def new_list(request):
-    print(dir(request))
-    list_ = List.objects.create()
-    item = Item(text=request.POST['text'], list=list_)
-    try:
-        item.full_clean() # sprawdzenie poprawności stworzonego obiektu
-        item.save()
-    except ValidationError:
-        list_.delete()
-        error = "Element nie może być pusty"
-        return render(request, "home.html", {"error": error})
-    return redirect(list_) # automatycznie wola get_absolute_url
-
-
+    form = ItemForm(data=request.POST) # 
+    if form.is_valid(): # 
+        list_ = List.objects.create()
+        Item.objects.create(text=request.POST['text'], list=list_)
+        return redirect(list_)
+    else:
+        return render(request, 'home.html', {"form": form}) # 

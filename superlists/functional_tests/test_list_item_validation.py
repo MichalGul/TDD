@@ -10,7 +10,6 @@ def prepare_webdriver():
 
 class ItemValidationTest(FunctionalTest):
 
-
     def test_cannot_add_empty_list_items(self):
         # Edyta przeszła na stronę główną i przypadkowo spróbowała utworzyć
         # pusty element na liście. Nacisnęła klawisz Enter w pustym polu tekstowym.
