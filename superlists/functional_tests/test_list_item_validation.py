@@ -48,5 +48,5 @@ class ItemValidationTest(FunctionalTest):
         #Otrzymała komunikat błędu
         self.check_for_row_in_list_table("1: Kupić kalosze")
         error = self.browser.find_element_by_css_selector('.has-error')
-        self.assertEqual(error.text, "Podany element już istnieje na liście")
+        self.assertEqual(error.text, "Podany element już istnieje na liście.")
 

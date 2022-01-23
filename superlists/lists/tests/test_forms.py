@@ -1,6 +1,6 @@
 from django.test import TestCase
 from lists.forms import ItemForm
-from lists.forms import EMPTY_LIST_ERROR
+from lists.forms import EMPTY_LIST_ERROR, DUPLICATE_ITEM_ERROR, ExistingListItemForm, ItemForm
 from lists.models import Item, List
 from unittest import skip
 
@@ -30,3 +30,30 @@ class ItemFormtest(TestCase):
         self.assertEqual(new_item, Item.objects.first())
         self.assertEqual(new_item.text, 'dowolne zadanie')
         self.assertEqual(new_item.list, list_)
+
+
+class ExistingListItemFormTest(TestCase):
+
+    def test_form_renders_item_text_input(self):
+        list_ = List.objects.create()
+        form = ExistingListItemForm(for_list=list_)
+        self.assertIn('placeholder="Wpisz rzecz do zrobienia"', form.as_p())
+
+    def test_form_validation_for_blank_items(self):
+        list_ = List.objects.create()
+        form = ExistingListItemForm(for_list=list_, data={'text': ''})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['text'], [EMPTY_LIST_ERROR])
+
+    def test_form_validation_for_duplicate_items(self):
+        list_ = List.objects.create()
+        Item.objects.create(list=list_, text='żadnych powtórzeń!')
+        form = ExistingListItemForm(for_list=list_, data={'text': 'żadnych powtórzeń!'})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['text'], [DUPLICATE_ITEM_ERROR])
+
+    def test_form_save(self):
+        list_ = List.objects.create()
+        form = ExistingListItemForm(for_list=list_, data={'text': 'hi'})
+        new_item = form.save()
+        self.assertEqual(new_item, Item.objects.all()[0])
