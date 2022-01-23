@@ -24,3 +24,8 @@ class ItemForm(forms.models.ModelForm):
         error_messages= {
             'text': {'required': EMPTY_LIST_ERROR}
         }
+
+    def save(self, for_list):
+        # instance przedstawia modyfikowany lub tworzony obiekt bazy danych
+        self.instance.list = for_list
+        return super().save() # zapisuje dane z formularza do bazy danych

@@ -1,9 +1,12 @@
 from django.test import TestCase
 from lists.forms import ItemForm
 from lists.forms import EMPTY_LIST_ERROR
+from lists.models import Item, List
+from unittest import skip
 
 class ItemFormtest(TestCase):
 
+    @skip("omit")
     def test_form_renders_item_text_input(self):
         form=ItemForm()
         self.fail(form.as_p()) # generowanie formularza jako kodu html
@@ -19,3 +22,11 @@ class ItemFormtest(TestCase):
         self.assertEqual(
             form.errors['text'], [EMPTY_LIST_ERROR]
         )
+
+    def test_from_save_handlers_saving_to_a_list(self):
+        list_ = List.objects.create()
+        form = ItemForm(data={'text': 'dowolne zadanie'})
+        new_item = form.save(for_list=list_)
+        self.assertEqual(new_item, Item.objects.first())
+        self.assertEqual(new_item.text, 'dowolne zadanie')
+        self.assertEqual(new_item.list, list_)
